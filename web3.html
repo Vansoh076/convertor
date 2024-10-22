@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number System Converter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="converter">
+        <h2>Number System Converter</h2>
+        <label for="number">Enter the number:</label>
+        <input type="text" id="number" placeholder="Enter number">
+
+        <label for="numType">Enter the number type:</label>
+        <select id="numType">
+            <option value="decimal">Decimal</option>
+            <option value="binary">Binary</option>
+            <option value="octal">Octal</option>
+            <option value="hexadecimal">Hexadecimal</option>
+        </select>
+
+        <button onclick="convertNumber()">Convert</button>
+        <button onclick="resetFields()">Reset</button>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        function convertNumber() {
+            const number = document.getElementById('number').value;
+            const numType = document.getElementById('numType').value;
+            const results = document.getElementById('results');
+            results.innerHTML = '';
+
+            if (numType === 'decimal') {
+                const dec = parseFloat(number);
+                results.innerHTML += `<p>Binary: ${decimalToBinary(dec)}</p>`;
+                results.innerHTML += `<p>Octal: ${decimalToOctal(dec)}</p>`;
+                results.innerHTML += `<p>Hexadecimal: ${decimalToHexadecimal(dec)}</p>`;
+            } else if (numType === 'binary') {
+                const dec = binaryToDecimal(number);
+                results.innerHTML += `<p>Decimal: ${dec}</p>`;
+                results.innerHTML += `<p>Octal: ${decimalToOctal(dec)}</p>`;
+                results.innerHTML += `<p>Hexadecimal: ${decimalToHexadecimal(dec)}</p>`;
+            } else if (numType === 'octal') {
+                const dec = octalToDecimal(number);
+                results.innerHTML += `<p>Binary: ${decimalToBinary(dec)}</p>`;
+                results.innerHTML += `<p>Decimal: ${dec}</p>`;
+                results.innerHTML += `<p>Hexadecimal: ${decimalToHexadecimal(dec)}</p>`;
+            } else if (numType === 'hexadecimal') {
+                const dec = hexadecimalToDecimal(number);
+                results.innerHTML += `<p>Binary: ${decimalToBinary(dec)}</p>`;
+                results.innerHTML += `<p>Octal: ${decimalToOctal(dec)}</p>`;
+                results.innerHTML += `<p>Decimal: ${dec}</p>`;
+            } else {
+                results.innerHTML = '<p>Invalid number type!</p>';
+            }
+        }
+
+        function resetFields() {
+            document.getElementById('number').value = '';
+            document.getElementById('numType').value = 'decimal';
+            document.getElementById('results').innerHTML = '';
+        }
+
+        function decimalToBinary(num) {
+            let [integerPart, fractionalPart] = num.toString().split('.');
+            let binaryInteger = parseInt(integerPart, 10).toString(2);
+            if (fractionalPart) {
+                let binaryFraction = '';
+                let fraction = parseFloat('0.' + fractionalPart);
+                while (fraction > 0 && binaryFraction.length < 20) { // Limit to 20 places for readability
+                    fraction *= 2;
+                    if (fraction >= 1) {
+                        binaryFraction += '1';
+                        fraction -= 1;
+                    } else {
+                        binaryFraction += '0';
+                    }
+                }
+                return binaryInteger + '.' + binaryFraction;
+            }
+            return binaryInteger;
+        }
+
+        function decimalToOctal(num) {
+            let [integerPart, fractionalPart] = num.toString().split('.');
+            let octalInteger = parseInt(integerPart, 10).toString(8);
+            if (fractionalPart) {
+                let octalFraction = '';
+                let fraction = parseFloat('0.' + fractionalPart);
+                while (fraction > 0 && octalFraction.length < 20) { // Limit to 20 places for readability
+                    fraction *= 8;
+                    let digit = Math.floor(fraction);
+                    octalFraction += digit.toString();
+                    fraction -= digit;
+                }
+                return octalInteger + '.' + octalFraction;
+            }
+            return octalInteger;
+        }
+
+        function decimalToHexadecimal(num) {
+            let [integerPart, fractionalPart] = num.toString().split('.');
+            let hexInteger = parseInt(integerPart, 10).toString(16).toUpperCase();
+            if (fractionalPart) {
+                let hexFraction = '';
+                let fraction = parseFloat('0.' + fractionalPart);
+                while (fraction > 0 && hexFraction.length < 20) { // Limit to 20 places for readability
+                    fraction *= 16;
+                    let digit = Math.floor(fraction);
+                    hexFraction += digit.toString(16).toUpperCase();
+                    fraction -= digit;
+                }
+                return hexInteger + '.' + hexFraction;
+            }
+            return hexInteger;
+        }
+
+        function binaryToDecimal(num) {
+            let [integerPart, fractionalPart] = num.split('.');
+            let decimalInteger = parseInt(integerPart, 2);
+            if (fractionalPart) {
+                let decimalFraction = 0;
+                for (let i = 0; i < fractionalPart.length; i++) {
+                    decimalFraction += parseInt(fractionalPart[i], 2) * Math.pow(2, -(i + 1));
+                }
+                return decimalInteger + decimalFraction;
+            }
+            return decimalInteger;
+        }
+
+        function octalToDecimal(num) {
+            let [integerPart, fractionalPart] = num.split('.');
+            let decimalInteger = parseInt(integerPart, 8);
+            if (fractionalPart) {
+                let decimalFraction = 0;
+                for (let i = 0; i < fractionalPart.length; i++) {
+                    decimalFraction += parseInt(fractionalPart[i], 8) * Math.pow(8, -(i + 1));
+                }
+                return decimalInteger + decimalFraction;
+            }
+            return decimalInteger;
+        }
+
+        function hexadecimalToDecimal(num) {
+            let [integerPart, fractionalPart] = num.split('.');
+            let decimalInteger = parseInt(integerPart, 16);
+            if (fractionalPart) {
+                let decimalFraction = 0;
+                for (let i = 0; i < fractionalPart.length; i++) {
+                    decimalFraction += parseInt(fractionalPart[i], 16) * Math.pow(16, -(i + 1));
+                }
+                return decimalInteger + decimalFraction;
+            }
+            return decimalInteger;
+        }
+    </script>
+</body>
+</html>
